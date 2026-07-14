@@ -116,3 +116,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 142.04 seconds
 root@ip-10-129-136-147:~# 
 
+<img width="1440" height="900" alt="Captura de ecrã 2026-07-14, às 19 35 31" src="https://github.com/user-attachments/assets/7e131ce1-7823-4853-95c5-b65dc3f73420" />
+<img width="1440" height="900" alt="Captura de ecrã 2026-07-14, às 19 41 29" src="https://github.com/user-attachments/assets/0a37307b-9362-4013-8cc3-78f8e85cb5ac" />
+<img width="1440" height="900" alt="Captura de ecrã 2026-07-14, às 19 45 05" src="https://github.com/user-attachments/assets/08505b69-fcd1-468c-b89b-6156a3ff4342" />
+<img width="1440" height="900" alt="Captura de ecrã 2026-07-14, às 19 45 11" src="https://github.com/user-attachments/assets/45954aed-d451-410d-a3d7-9b616e24bcaf" />
