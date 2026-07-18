@@ -13,7 +13,6 @@ Ambiente
 
 Comando utilizado:
 
-```bash
 ip a
 resultado:
 root@ubuntu:~$ ip a 
@@ -33,7 +32,7 @@ root@ubuntu:~$ ip a
     link/ether 42:88:fa:3b:a7:d0 brd ff:ff:ff:ff:ff:ff
     inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
        valid_lft forever preferred_lft forever
-</> bash
+
 ss -tuln
 root@ubuntu:~$ ss -tuln
 Netid    State     Recv-Q    Send-Q                           Local Address:Port          Peer Address:Port    Process    
