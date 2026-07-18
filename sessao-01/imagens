@@ -1,1 +1,15 @@
+## Captura de ecrã do comando `ip a`
 
+![Output do comando ip a](imagens/ip-a.png)
+
+---
+
+## Captura de ecrã do comando `ss -tuln`
+
+![Output do comando ss -tuln](imagens/ss-tuln.png)
+
+---
+
+## Captura de ecrã do comando `nmap -sV -sC 10.129.136.147`
+
+![Output do comando Nmap](imagens/nmap.png)
