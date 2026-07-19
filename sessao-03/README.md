@@ -90,7 +90,8 @@ sudo ufw status
 Resultado:
 
 ```text
-[colocar output obtido no laboratório]
+[Status: inactive
+]
 ```
 
 ---
