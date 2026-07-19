@@ -1,19 +1,12 @@
 # Sessão 03 — Hardening de Redes Linux e Configuração de Firewalls
 
-![Linux Security](https://img.shields.io/badge/Linux-Cybersecurity-blue)
-![Firewall](https://img.shields.io/badge/Firewall-UFW%20%7C%20iptables-green)
-
 ## Curso
 
-**Percurso Reskilling — Linux e Cibersegurança**
+**Reskilling — Linux e Cibersegurança**
 
 ## Módulo
 
 **Linux e Cibersegurança**
-
-## Sessão Laboratorial
-
-**Sessão 03 — Hardening de Redes Linux e Configuração de Firewalls**
 
 ## Objetivo de Aprendizagem
 
@@ -23,141 +16,160 @@
 
 # 1. Introdução
 
-Nesta sessão foi realizada a configuração de uma política defensiva de segurança
-num ambiente Linux, utilizando mecanismos de firewall para reduzir a superfície
-de ataque do servidor.
+Nesta sessão laboratorial foi realizada a configuração de uma política
+defensiva de segurança num sistema Linux através da utilização de
+firewalls.
 
-O objetivo principal foi impedir acessos não autorizados a serviços críticos,
-permitindo apenas comunicações necessárias.
+O objetivo principal foi reduzir a superfície de ataque do servidor,
+controlando ligações de entrada e saída, permitindo apenas serviços
+necessários e bloqueando um endereço IP considerado suspeito.
 
-Foram utilizadas duas tecnologias:
+Foram utilizadas duas ferramentas principais:
 
-- **UFW (Uncomplicated Firewall)** — ferramenta simplificada de gestão de firewall Linux;
-- **iptables** — ferramenta avançada de filtragem de pacotes baseada no Netfilter.
+- **UFW (Uncomplicated Firewall)** — ferramenta simplificada para gestão
+de regras de firewall;
+- **iptables** — ferramenta avançada de filtragem de pacotes baseada
+no Netfilter do kernel Linux.
 
 ---
 
-# 2. Ambiente Laboratorial
+# 2. Ambiente utilizado
 
-## Plataforma utilizada
+## Plataforma
 
-**TryHackMe — Network Security Essentials**
+TryHackMe — Network Security Essentials
 
-Sistema:
+## Sistema
 
-```
 Ubuntu Linux
-```
 
-Terminal utilizado:
+## Terminal
 
-```
 Bash Shell
-```
 
 ---
 
-# 3. Conceitos Aplicados
+# 3. Verificação inicial do UFW
 
-## Firewall
+Antes de realizar alterações foi verificado o estado atual do firewall.
 
-Um firewall é um mecanismo de segurança responsável por controlar o tráfego
-de rede baseado em regras definidas pelo administrador.
-
-Neste laboratório foi aplicada uma política:
-
-```
-Entrada  → Bloqueada por padrão
-Saída    → Permitida
-SSH      → Permitido
-IP suspeito → Bloqueado
-```
-
----
-
-# 4. Configuração UFW
-
-## 4.1 Verificação do estado inicial
-
-Primeiramente foi verificado o estado atual do firewall.
-
-Comando:
+Comando executado:
 
 ```bash
 sudo ufw status
 ```
 
-Resultado:
+Resultado obtido:
 
 ```text
 Status: inactive
 ```
 
+### Análise
+
+O UFW encontrava-se instalado no sistema, mas estava inicialmente
+desativado.
+
 ---
 
-# 4.2 Política padrão de entrada
+# 4. Configuração das políticas padrão do UFW
 
-Foi configurada uma política restritiva para bloquear todas as ligações
+## 4.1 Bloqueio de ligações de entrada
+
+Foi aplicada uma política restritiva para bloquear todas as ligações
 recebidas por padrão.
 
-Comando:
+Comando executado:
 
 ```bash
 sudo ufw default deny incoming
 ```
 
-Resultado esperado:
+Resultado:
 
 ```text
 Default incoming policy changed to 'deny'
+(be sure to update your rules accordingly)
 ```
 
 ### Explicação
 
-Esta configuração impede que serviços não autorizados aceitem ligações
-externas.
+A política `deny incoming` impede que ligações externas sejam aceites
+automaticamente pelo servidor.
 
-Apenas regras explicitamente permitidas poderão receber tráfego.
+Apenas serviços autorizados através de regras específicas poderão
+receber tráfego.
 
 ---
 
-# 4.3 Política padrão de saída
+## 4.2 Erro durante a configuração da saída
 
-Foi permitido que o servidor continue a comunicar com redes externas.
+Durante a execução ocorreu um erro de escrita no comando.
 
-Comando:
+Comando inicialmente utilizado:
+
+```bash
+sudo ufw default alow outgoing
+```
+
+Resultado:
+
+```text
+ERROR: Invalid syntax
+```
+
+### Causa do erro
+
+O comando continha um erro de digitação:
+
+Errado:
+
+```
+alow
+```
+
+Correto:
+
+```
+allow
+```
+
+---
+
+## 4.3 Correção do comando
+
+O comando foi executado novamente com a sintaxe correta:
 
 ```bash
 sudo ufw default allow outgoing
 ```
 
-Resultado esperado:
+Resultado:
 
 ```text
 Default outgoing policy changed to 'allow'
+(be sure to update your rules accordingly)
 ```
 
 ### Explicação
 
-Permite operações como:
-
-- atualizações do sistema;
-- comunicação com servidores externos;
-- instalação de pacotes.
+A política permite que o servidor realize ligações externas,
+como atualizações do sistema e comunicação com outros serviços.
 
 ---
 
-# 4.4 Permissão de acesso SSH
+# 5. Permitir acesso SSH
 
-Como o acesso administrativo remoto utiliza SSH, foi criada uma exceção.
+Foi criada uma exceção para permitir administração remota através
+do protocolo SSH.
 
-Comando:
+Comando executado:
 
 ```bash
 sudo ufw allow 22/tcp
 ```
 
-Resultado esperado:
+Resultado:
 
 ```text
 Rules updated
@@ -166,15 +178,16 @@ Rules updated (v6)
 
 ### Explicação
 
-A porta TCP 22 foi autorizada para permitir administração remota segura.
+A porta TCP 22 corresponde ao serviço SSH.
+
+Esta regra permite acesso administrativo remoto enquanto mantém
+outros serviços bloqueados pela política padrão.
 
 ---
 
-# 5. Configuração iptables
+# 6. Configuração de regra iptables
 
-## 5.1 Bloqueio de endereço IP suspeito
-
-Foi simulada uma tentativa de acesso proveniente de um endereço IP malicioso.
+Foi simulada uma situação de defesa contra um endereço IP suspeito.
 
 IP bloqueado:
 
@@ -182,32 +195,27 @@ IP bloqueado:
 203.0.113.50
 ```
 
-Regra aplicada:
+Comando executado:
 
 ```bash
 sudo iptables -A INPUT -s 203.0.113.50 -j DROP
 ```
 
----
-
-## Explicação da regra
+### Explicação da regra
 
 | Parâmetro | Função |
 |---|---|
-| iptables | Ferramenta de firewall Linux |
-| -A | Adicionar nova regra |
-| INPUT | Tráfego recebido pelo servidor |
-| -s | Define endereço de origem |
+| -A | Adicionar uma nova regra |
+| INPUT | Controlar tráfego recebido pelo servidor |
+| -s | Definir endereço de origem |
 | 203.0.113.50 | IP considerado suspeito |
-| DROP | Bloqueia silenciosamente o tráfego |
+| DROP | Bloquear silenciosamente os pacotes |
 
 ---
 
-# 6. Persistência das regras iptables
+# 7. Tentativa inicial de guardar regras iptables
 
-As regras do iptables podem desaparecer após reiniciar o sistema.
-
-Para guardar a configuração foi utilizado:
+Foi executado:
 
 ```bash
 sudo iptables-save | sudo tee /etc/iptables/rules.v4
@@ -216,87 +224,91 @@ sudo iptables-save | sudo tee /etc/iptables/rules.v4
 Resultado:
 
 ```text
-# Generated by iptables-save v1.8.10 (nf_tables) on Sun Jul 19 17:27:47 2026
+tee: /etc/iptables/rules.v4: No such file or directory
+```
+
+### Análise do problema
+
+O erro ocorreu porque o diretório:
+
+```
+/etc/iptables/
+```
+
+não existia no ambiente utilizado.
+
+Apesar do erro, foi possível observar que a regra criada estava presente:
+
+```text
+-A INPUT -s 203.0.113.50/32 -j DROP
+```
+
+---
+
+# 8. Correção e persistência das regras
+
+Foi criado o diretório necessário:
+
+```bash
+sudo mkdir -p /etc/iptables
+```
+
+Depois foi executado novamente:
+
+```bash
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+```
+
+Resultado final:
+
+```text
+# Generated by iptables-save v1.8.10 (nf_tables)
 *filter
 :INPUT ACCEPT [19875:13004397]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -s 203.0.113.50/32 -j DROP
 COMMIT
-# Completed on Sun Jul 19 17:27:47 2026
+# Completed
+```
 
+### Resultado
+
+As regras do iptables foram guardadas corretamente no ficheiro:
+
+```
+/etc/iptables/rules.v4
 ```
 
 ---
 
-# 7. Evidências da Configuração
+# 9. Resumo da configuração aplicada
 
-## 7.1 Estado final UFW
+Após todas as alterações foi implementada a seguinte política:
 
-Comando:
-
-```bash
-sudo ufw status verbose
 ```
+Tráfego recebido:
+BLOQUEADO POR PADRÃO
 
-Resultado:
+Serviço permitido:
+SSH - Porta 22/TCP
 
-```text
-[colar aqui o resultado]
-```
+IP bloqueado:
+203.0.113.50
 
----
-
-## 7.2 Regras atuais iptables
-
-Comando:
-
-```bash
-sudo iptables -L -v
-```
-
-Resultado:
-
-```text
-[colar aqui o resultado]
+Tráfego de saída:
+PERMITIDO
 ```
 
 ---
 
-# 8. Análise de Segurança
+# 10. Problemas encontrados e resolução
 
-Após a implementação das regras foi criada uma política defensiva baseada
-no princípio de menor privilégio.
+Durante o laboratório foram encontrados dois problemas:
 
-As medidas aplicadas foram:
+## Erro 1 — Escrita incorreta no comando UFW
 
-## Restrição de entrada
-
-O bloqueio padrão de ligações recebidas reduz a possibilidade de exploração
-de serviços expostos.
-
-## Permissão controlada
-
-Apenas o serviço SSH foi autorizado, mantendo o acesso administrativo.
-
-## Bloqueio de origem suspeita
-
-O endereço IP identificado como potencial ameaça foi bloqueado através
-da chain INPUT do iptables.
-
-## Persistência
-
-As regras foram guardadas para garantir continuidade da configuração.
-
----
-
-# 9. Problemas encontrados durante a execução
-
-Durante a configuração foram identificados alguns erros:
-
-## Erro de escrita no comando UFW
-
-Comando incorreto:
+Problema:
 
 ```bash
 sudo ufw default alow outgoing
@@ -310,9 +322,9 @@ sudo ufw default allow outgoing
 
 ---
 
-## Diretório iptables inexistente
+## Erro 2 — Diretório inexistente para guardar regras iptables
 
-Erro:
+Problema:
 
 ```text
 /etc/iptables/rules.v4: No such file or directory
@@ -320,13 +332,11 @@ Erro:
 
 Correção:
 
-Criação do diretório:
-
 ```bash
 sudo mkdir -p /etc/iptables
 ```
 
-Depois foi executado novamente:
+Depois:
 
 ```bash
 sudo iptables-save | sudo tee /etc/iptables/rules.v4
@@ -334,28 +344,28 @@ sudo iptables-save | sudo tee /etc/iptables/rules.v4
 
 ---
 
-# 10. Conclusão
+# 11. Conclusão
 
-Nesta sessão foi implementada uma política de hardening de rede num sistema Linux.
+Nesta sessão foi aplicada uma configuração de hardening de rede Linux,
+utilizando UFW e iptables.
 
-Foram aplicadas configurações utilizando UFW e iptables para:
+Foram realizadas configurações para:
 
-- restringir ligações externas;
-- permitir apenas serviços necessários;
-- bloquear endereços suspeitos;
-- guardar regras de firewall.
+- bloquear ligações de entrada por padrão;
+- permitir ligações de saída;
+- manter acesso administrativo através de SSH;
+- bloquear um endereço IP suspeito;
+- guardar regras de firewall para persistência.
 
-Estas medidas contribuem para aumentar a segurança do servidor,
-reduzindo a superfície de ataque e protegendo serviços críticos.
+A atividade também permitiu praticar resolução de problemas através
+da identificação e correção de erros durante a configuração.
 
 ---
 
 # Autor
 
-**mbaptista**
+**Gilson Ramos**
 
-Curso:
-**Reskilling — Linux e Cibersegurança**
+## Data
 
-Data:
-**19 de Julho de 2026**
+19 de Julho de 2026
