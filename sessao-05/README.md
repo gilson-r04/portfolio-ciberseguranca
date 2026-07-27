@@ -1,5 +1,8 @@
 # Sessão 05 — Auditoria de Segurança e Hardening com Lynis
 
+## Módulo
+Linux e Cibersegurança — Curso Reskilling
+
 ## 1. Introdução
 
 Nesta sessão foi realizada uma auditoria de segurança ao sistema Linux utilizando a ferramenta **Lynis**, uma ferramenta de auditoria e hardening para sistemas Unix/Linux.
