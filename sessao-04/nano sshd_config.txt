@@ -1,0 +1,8 @@
+# Configuração SSH - Sessão 04
+# Gestão Segura de Acessos Remotos SSH
+
+PermitRootLogin no
+PasswordAuthentication no
+Port 2222
+
+Subsystem sftp internal-sftp
